@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "pago")
 @Data
@@ -18,4 +20,5 @@ public class PagoEntity {
     private Long id;
     private Long idProveedor;
     private Long idReporte;
+    private Integer quincena;
 }

@@ -21,4 +21,9 @@ public class ReporteEntity {
     private Long id;
     private Long idProveedor;
     private Double leche;
+    private Date fecha;
+    private Float solidos;
+    private Float grasa;
+    private Float varSolidos;
+    private Float varGrasa;
 }

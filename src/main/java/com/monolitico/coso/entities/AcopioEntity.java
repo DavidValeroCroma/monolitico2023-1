@@ -19,7 +19,7 @@ public class AcopioEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true)
     private Long id;
-    private Long codigo;
+    private Long idProveedor;
     private Date fecha;
     private Character turno;
     private Double leche;
