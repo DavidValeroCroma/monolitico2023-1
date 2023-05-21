@@ -2,17 +2,33 @@ package com.monolitico.coso.services;
 
 import com.monolitico.coso.entities.AcopioEntity;
 import com.monolitico.coso.repositories.AcopioRepository;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import lombok.Generated;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Objects;
+import java.io.IOException;
+import java.text.ParseException;
+
 
 @Service
 public class AcopioService {
     @Autowired
     AcopioRepository acopioRepository;
+
+    private final Logger logg = LoggerFactory.getLogger(AcopioService.class);
 
     public ArrayList<AcopioEntity> obtenerAcopios(){
         return (ArrayList<AcopioEntity>) acopioRepository.findAll();
@@ -61,6 +77,89 @@ public class AcopioService {
         }
 
         return acum;
+    }
+
+    @Generated
+    public String guardar(MultipartFile file){
+        String filename = file.getOriginalFilename();
+        if(filename != null){
+            if(!file.isEmpty()){
+                try{
+                    byte [] bytes = file.getBytes();
+                    Path path  = Paths.get(file.getOriginalFilename());
+                    Files.write(path, bytes);
+                    logg.info("Archivo guardado");
+                }
+                catch (IOException e){
+                    logg.error("ERROR", e);
+                }
+            }
+            return "Archivo guardado con exito!";
+        }
+        else{
+            return "No se pudo guardar el archivo";
+        }
+    }
+
+    @Generated
+    public void leerCsv(String direccion){
+        String texto = "";
+        BufferedReader bf = null;
+        acopioRepository.deleteAll();
+        try{
+            bf = new BufferedReader(new FileReader(direccion));
+            String temp = "";
+            String bfRead;
+            int count = 1;
+            while((bfRead = bf.readLine()) != null){
+                if (count == 1){
+                    count = 0;
+                }
+                else{
+                    guardarDataDB(bfRead.split(";")[0], bfRead.split(";")[1], bfRead.split(";")[2], bfRead.split(";")[3]);
+                    temp = temp + "\n" + bfRead;
+                }
+            }
+            texto = temp;
+            System.out.println("Archivo leido exitosamente");
+        }catch(Exception e){
+            System.err.println("No se encontro el archivo");
+        }finally{
+            if(bf != null){
+                try{
+                    bf.close();
+                }catch(IOException e){
+                    logg.error("ERROR", e);
+                }
+            }
+        }
+
+    }
+    public void guardarData(AcopioEntity data){
+        acopioRepository.save(data);
+    }
+
+
+    public void guardarDataDB(String fecha, String turno, String proveedor, String kls_leche){
+        AcopioEntity newData = new AcopioEntity();
+
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
+        Date fechaAux = null;
+        try {
+            fechaAux = formato.parse(fecha);
+            newData.setFecha(fechaAux);
+            newData.setTurno(turno.charAt(0));
+            newData.setIdProveedor(Long.parseLong(proveedor));
+            newData.setLeche(Double.parseDouble(kls_leche));
+            guardarData(newData);
+        } catch (ParseException e) {
+            System.out.println("Error al parsear la fecha.");
+            e.printStackTrace();
+        }
+
+    }
+    public void eliminarData(ArrayList<AcopioEntity> datas){
+        acopioRepository.deleteAll(datas);
     }
 
 }

@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
-
 @Entity
 @Table(name = "reporte")
 @Data
@@ -21,13 +19,12 @@ public class ReporteEntity {
     private Long id;
     private Long idProveedor;
     private Double leche;
-    private Date fecha;
     private Integer quincena;
     private Integer mes;
-    private Integer año;
-    private Float solidos;
-    private Float grasa;
-    private Float varSolidos;
-    private Float varGrasa;
-    private Float varCantLeche;
+    private Integer anio;
+    private Double solidos;
+    private Double grasa;
+    private Double varSolidos;
+    private Double varGrasa;
+    private Double varCantLeche;
 }

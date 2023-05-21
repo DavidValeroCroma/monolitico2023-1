@@ -10,4 +10,6 @@ import java.util.ArrayList;
 @Repository
 public interface ReporteRepository extends JpaRepository<ReporteEntity, Long>{
     ArrayList<ReporteEntity> findByIdProveedor(Long idProveedor);
+
+    ReporteEntity findByIdProveedorAndQuincenaAndMesAndAnio(Long idProveedor, Integer quincena , Integer mes, Integer anio);
 }

@@ -20,7 +20,6 @@ public class ProveedorEntity {
     @Column(nullable=false, length = 5, unique = true)
     private Long id;
     private String nombre;
-    private Date fecha;
     private Character categoria;
     private Boolean retencion;
 }
